@@ -1,10 +1,11 @@
-import { CircularProgress, Container, styled } from "@mui/material";
-import { ArticleMediaObject } from "./components/ArticleMediaObject.tsx";
 import { gql, useQuery } from "@apollo/client";
-import { Article, Meta } from "./types.ts";
-import { useState } from "react";
+import { CircularProgress, Container, styled } from "@mui/material";
 import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
+import Box from "@mui/material/Box";
+import { useState } from "react";
+import { ArticleMediaObject } from "./components/ArticleMediaObject.tsx";
+import { Article, Meta } from "./types.ts";
 
 const Wrapper = styled(Container)(({ theme }) => ({
   paddingTop: theme.spacing(4),
@@ -42,8 +43,9 @@ function useArticleList(variables: ArticleListVariables) {
 
 export function App() {
   const [offset, setOffset] = useState(1);
+  const allowedLimits = [10, 25, 50, 100];
+  const [limit, setLimit] = useState(10);
 
-  const limit = 10;
   const { data, loading } = useArticleList({
     limit,
     offset,
@@ -54,6 +56,13 @@ export function App() {
     value: number
   ) => {
     setOffset(value);
+  };
+
+  const handleRowSizeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedPage = parseInt(e.target?.value);
+    if (!selectedPage) return;
+
+    setLimit(selectedPage);
   };
 
   let content = null;
@@ -67,12 +76,25 @@ export function App() {
             return <ArticleMediaObject key={article.id} {...article} />;
           })}
         </ArticleMediaList>
-        <Stack direction="column" alignItems="center" mt={3}>
+        <Stack alignItems="center" mt={3}>
           <StyledPagination
             count={Math.ceil(data.articleList.meta.total / limit)}
             page={offset}
             onChange={handlePageChange}
           />
+
+          <Stack direction="row" gap={1} alignItems="center">
+            <p>Row Size</p>
+            <Box>
+              <select value={limit} onChange={handleRowSizeChange}>
+                {allowedLimits.map((n) => (
+                  <option key={n} value={n}>
+                    {n}
+                  </option>
+                ))}
+              </select>
+            </Box>
+          </Stack>
         </Stack>
       </div>
     );
