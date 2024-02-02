@@ -1,0 +1,23 @@
+type Article {
+  content: String!
+  createdAt: Date!
+  id: ID!
+  title: String!
+}
+
+type ArticleList {
+  meta: PaginationMeta!
+  nodes: [Article!]!
+}
+
+scalar Date
+
+type PaginationMeta {
+  limit: Int!
+  offset: Int!
+  total: Int!
+}
+
+type Query {
+  articleList(limit: Int = 10, offset: Int): ArticleList!
+}
