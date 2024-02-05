@@ -1,7 +1,7 @@
-import { ObjectTypeComposer, GraphQLDate } from "graphql-compose";
 import { GraphQLID, GraphQLNonNull, GraphQLString } from "graphql";
-import { GraphQLContext } from "../createContext";
+import { GraphQLDate, ObjectTypeComposer } from "graphql-compose";
 import { Article } from "../../model/Article";
+import { GraphQLContext } from "../createContext";
 import { AuthorType } from "./AuthorType";
 
 export const ArticleType = ObjectTypeComposer.createTemp<
@@ -17,7 +17,7 @@ export const ArticleType = ObjectTypeComposer.createTemp<
     author: {
       type: AuthorType,
       resolve: async (source, _, ctx) => {
-        return await ctx.services.author.findById(source.authorId);
+        return await ctx.loaders.authorLoader.load(source.authorId);
       },
     },
   },
