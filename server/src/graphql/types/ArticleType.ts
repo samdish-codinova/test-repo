@@ -15,7 +15,7 @@ export const ArticleType = ObjectTypeComposer.createTemp<
     content: new GraphQLNonNull(GraphQLString),
     createdAt: new GraphQLNonNull(GraphQLDate),
     author: {
-      type: AuthorType,
+      type: AuthorType.NonNull,
       resolve: async (source, _, ctx) => {
         return await ctx.loaders.authorLoader.load(source.authorId);
       },
