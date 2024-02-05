@@ -1,13 +1,11 @@
 import { gql, useQuery } from "@apollo/client";
-import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
-import Pagination from "@mui/material/Pagination";
-import Stack from "@mui/material/Stack";
-import Typography from "@mui/material/Typography";
 import { styled } from "@mui/material/styles";
 import { useState } from "react";
-import { ArticleMediaObject } from "./components/ArticleMediaObject.tsx";
+import ArticleMediaList from "./components/ArticleMediaList.tsx";
+import ArticleMediaListContainer from "./components/ArticleMediaListContainer.tsx";
 import { ArticleMediaObjectSkeleton } from "./components/ArticleMediaObjectSkeleton.tsx";
+import Pagination from "./components/Pagination.tsx";
 import { Article, Meta } from "./types.ts";
 
 const Wrapper = styled(Container)(({ theme }) => ({
@@ -74,70 +72,28 @@ export function App() {
   let content = null;
   if (loading) {
     content = (
-      <ArticleMediaList>
+      <ArticleMediaListContainer>
         {[...Array(10).keys()].map((i) => (
           <ArticleMediaObjectSkeleton key={i} />
         ))}
-      </ArticleMediaList>
+      </ArticleMediaListContainer>
     );
   } else if (data) {
     content = (
       <div>
-        <ArticleMediaList>
-          {data.articleList.nodes.map((article) => {
-            return <ArticleMediaObject key={article.id} {...article} />;
-          })}
-        </ArticleMediaList>
+        <ArticleMediaList articles={data.articleList.nodes} />
 
-        <Stack
-          className="pagination-container"
-          alignItems="center"
-          pt={3}
-          sx={{
-            position: "fixed",
-            bottom: 0,
-            left: 0,
-            right: 0,
-            background: "rgba(255, 255, 255, 0.6)",
-            borderRadius: "16px",
-            boxShadow: "0 4px 30px rgba(0, 0, 0, 0.1)",
-            backdropFilter: "blur(5px)",
-            WebkitBackdropFilter: "blur(5px)",
-            border: "1px solid rgba(255, 255, 255, 0.3)",
-          }}
-        >
-          <Pagination
-            count={Math.ceil(data.articleList.meta.total / limit)}
-            page={offset}
-            onChange={handlePageChange}
-          />
-
-          <Stack direction="row" gap={1} alignItems="center">
-            <Typography variant="body1" my={2} color="#000">
-              Row Size
-            </Typography>
-            <Box>
-              <select value={limit} onChange={handleRowSizeChange}>
-                {allowedLimits.map((n) => (
-                  <option key={n} value={n}>
-                    {n}
-                  </option>
-                ))}
-              </select>
-            </Box>
-          </Stack>
-        </Stack>
+        <Pagination
+          count={Math.ceil(data.articleList.meta.total / limit)}
+          page={offset}
+          onPageChange={handlePageChange}
+          allowedLimits={allowedLimits}
+          limit={limit}
+          onRowSizeChange={handleRowSizeChange}
+        />
       </div>
     );
   }
+
   return <Wrapper>{content}</Wrapper>;
 }
-
-const ArticleMediaList = styled("div")(({ theme }) => ({
-  marginBottom: "6rem",
-  display: "grid",
-  gap: theme.spacing(2),
-  [theme.breakpoints.up("md")]: {
-    gridTemplateColumns: "repeat(2, 1fr)",
-  },
-}));
