@@ -1,8 +1,10 @@
 import { gql, useQuery } from "@apollo/client";
-import { Container, styled } from "@mui/material";
 import Box from "@mui/material/Box";
+import Container from "@mui/material/Container";
 import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
+import { styled } from "@mui/material/styles";
 import { useState } from "react";
 import { ArticleMediaObject } from "./components/ArticleMediaObject.tsx";
 import { ArticleMediaObjectSkeleton } from "./components/ArticleMediaObjectSkeleton.tsx";
@@ -58,10 +60,7 @@ export function App() {
     offset,
   });
 
-  const handlePageChange = (
-    event: React.ChangeEvent<unknown>,
-    value: number
-  ) => {
+  const handlePageChange = (_: React.ChangeEvent<unknown>, value: number) => {
     setOffset(value);
   };
 
@@ -89,15 +88,34 @@ export function App() {
             return <ArticleMediaObject key={article.id} {...article} />;
           })}
         </ArticleMediaList>
-        <Stack alignItems="center" mt={3}>
-          <StyledPagination
+
+        <Stack
+          className="pagination-container"
+          alignItems="center"
+          pt={3}
+          sx={{
+            position: "fixed",
+            bottom: 0,
+            left: 0,
+            right: 0,
+            background: "rgba(255, 255, 255, 0.6)",
+            borderRadius: "16px",
+            boxShadow: "0 4px 30px rgba(0, 0, 0, 0.1)",
+            backdropFilter: "blur(5px)",
+            WebkitBackdropFilter: "blur(5px)",
+            border: "1px solid rgba(255, 255, 255, 0.3)",
+          }}
+        >
+          <Pagination
             count={Math.ceil(data.articleList.meta.total / limit)}
             page={offset}
             onChange={handlePageChange}
           />
 
           <Stack direction="row" gap={1} alignItems="center">
-            <p>Row Size</p>
+            <Typography variant="body1" my={2} color="#000">
+              Row Size
+            </Typography>
             <Box>
               <select value={limit} onChange={handleRowSizeChange}>
                 {allowedLimits.map((n) => (
@@ -116,18 +134,10 @@ export function App() {
 }
 
 const ArticleMediaList = styled("div")(({ theme }) => ({
+  marginBottom: "6rem",
   display: "grid",
   gap: theme.spacing(2),
   [theme.breakpoints.up("md")]: {
     gridTemplateColumns: "repeat(2, 1fr)",
-  },
-}));
-
-const StyledPagination = styled(Pagination)(() => ({
-  ".MuiPaginationItem-root": {
-    color: "white",
-  },
-  ".MuiPaginationItem-root.Mui-selected": {
-    backgroundColor: "#ffffff5c",
   },
 }));
