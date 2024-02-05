@@ -19,7 +19,7 @@ export function ArticleMediaObject({
       <CardHeader
         avatar={<Avatar src={author.avatar} aria-label="author" />}
         title={author.name}
-        subheader={createdAt}
+        subheader={new Date(createdAt).toLocaleString()}
       />
       <CardContent>{content}</CardContent>
     </Card>
