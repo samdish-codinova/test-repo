@@ -20,6 +20,12 @@ const query = gql`
         title
         content
         createdAt
+        author {
+          id
+          name
+          createdAt
+          avatar
+        }
       }
       meta {
         limit
