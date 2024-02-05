@@ -1,10 +1,11 @@
 import { gql, useQuery } from "@apollo/client";
-import { CircularProgress, Container, styled } from "@mui/material";
+import { Container, styled } from "@mui/material";
+import Box from "@mui/material/Box";
 import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
-import Box from "@mui/material/Box";
 import { useState } from "react";
 import { ArticleMediaObject } from "./components/ArticleMediaObject.tsx";
+import { ArticleMediaObjectSkeleton } from "./components/ArticleMediaObjectSkeleton.tsx";
 import { Article, Meta } from "./types.ts";
 
 const Wrapper = styled(Container)(({ theme }) => ({
@@ -73,7 +74,13 @@ export function App() {
 
   let content = null;
   if (loading) {
-    content = <CircularProgress />;
+    content = (
+      <ArticleMediaList>
+        {[...Array(10).keys()].map((i) => (
+          <ArticleMediaObjectSkeleton key={i} />
+        ))}
+      </ArticleMediaList>
+    );
   } else if (data) {
     content = (
       <div>
