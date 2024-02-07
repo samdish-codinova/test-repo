@@ -24,8 +24,8 @@ const createDataBaseModels = async (knexInstance: Knex<any, unknown[]>) => {
         table.uuid("id").primary().defaultTo(knexInstance.fn.uuid());
         table.string("title");
         table.string("content", 2048);
-        table.uuid("author");
-        table.foreign("author").references("authors.id");
+        table.uuid("authorId");
+        table.foreign("authorId").references("authors.id");
         table.dateTime("createdAt").defaultTo(knexInstance.fn.now());
       });
     }

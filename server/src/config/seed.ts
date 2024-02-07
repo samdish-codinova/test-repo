@@ -25,7 +25,7 @@ const seed = async () => {
       title: faker.lorem.sentence(),
       content: faker.lorem.paragraphs(3),
       createdAt: faker.date.past(),
-      author: faker.helpers.arrayElement(AUTHORS).id,
+      authorId: faker.helpers.arrayElement(AUTHORS).id,
     });
   }
 

@@ -14,7 +14,7 @@ declare module "knex/types/tables" {
     title: string;
     content: string;
     createdAt: string;
-    author: number;
+    authorId: number;
   }
 
   interface Tables {
