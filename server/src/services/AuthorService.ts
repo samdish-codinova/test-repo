@@ -1,12 +1,13 @@
+import { faker } from "@faker-js/faker";
+import { ulid } from "ulid";
+import { z } from "zod";
+import knexInstance from "../config/db";
 import {
   Author,
   AuthorQuery,
   AuthorQuerySchema,
   AuthorSchema,
 } from "../model/Author";
-import { ulid } from "ulid";
-import { faker } from "@faker-js/faker";
-import { z } from "zod";
 
 export const AUTHORS = [];
 for (let i = 0; i < 100; i++) {
@@ -38,13 +39,25 @@ export class AuthorService {
   }
 
   async findManyByIds(authorIds: readonly string[]): Promise<Author[]> {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(
-          AUTHORS.filter((author: Author) => authorIds.includes(author.id))
-        );
-      }, 1500); // Mock the network latency.
-    });
+    const shuffledAuthors = await knexInstance
+      .select("*")
+      .from("authors")
+      .whereIn("id", authorIds);
+
+    // Result may be not same as "authorIds" array, so arrange elements of "shuffledAuthors" like "authorIds" for caching.
+    for (let i = 0; i < authorIds.length; i++) {
+      const authorId = authorIds[i];
+
+      const shuffledIndex = shuffledAuthors.findIndex(
+        (author) => author.id === authorId
+      );
+
+      const temp = shuffledAuthors[shuffledIndex];
+      shuffledAuthors[shuffledIndex] = shuffledAuthors[i];
+      shuffledAuthors[i] = temp;
+    }
+
+    return shuffledAuthors;
   }
 }
 

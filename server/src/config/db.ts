@@ -3,17 +3,17 @@ import { knex } from "knex";
 
 declare module "knex/types/tables" {
   interface Author {
-    id: number;
+    id: string;
     name: string;
     avatar: string;
-    createdAt: string;
+    createdAt: Date;
   }
 
   interface Article {
-    id: number;
+    id: string;
     title: string;
     content: string;
-    createdAt: string;
+    createdAt: Date;
     authorId: number;
   }
 
