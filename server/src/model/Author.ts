@@ -26,4 +26,10 @@ export const GetAuthorInputSchema = z.object({
 
 export type GetAuthorInputSchema = z.infer<typeof GetAuthorInputSchema>;
 
+export const AuthorUpdateSchema = AuthorInputSchema.partial().extend({
+  id: z.string().uuid(),
+});
+
+export type AuthorUpdateSchema = z.infer<typeof AuthorUpdateSchema>;
+
 export type AuthorQuery = z.input<typeof AuthorQuerySchema>;

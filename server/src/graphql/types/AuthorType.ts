@@ -1,9 +1,15 @@
-import { GraphQLID, GraphQLNonNull, GraphQLString } from "graphql";
+import {
+  GraphQLBoolean,
+  GraphQLID,
+  GraphQLNonNull,
+  GraphQLString,
+} from "graphql";
 import { GraphQLDate, ObjectTypeComposer } from "graphql-compose";
 import { GraphQLContext } from "graphql/createContext";
 import {
   Author,
   AuthorInputSchema,
+  AuthorUpdateSchema,
   GetAuthorInputSchema,
 } from "../../model/Author";
 
@@ -52,5 +58,42 @@ AuthorType.addResolver({
     const author = await context.services.author.findById(authorData.id);
 
     return author;
+  },
+});
+
+const AuthorUpdateResultType = ObjectTypeComposer.createTemp({
+  name: "AuthorUpdateResultType",
+  fields: {
+    success: new GraphQLNonNull(GraphQLBoolean),
+    message: GraphQLString,
+  },
+});
+
+AuthorType.addResolver({
+  name: "updateById",
+  type: AuthorUpdateResultType,
+  args: {
+    id: {
+      type: new GraphQLNonNull(GraphQLString),
+    },
+    name: {
+      type: GraphQLString,
+    },
+    avatar: {
+      type: GraphQLString,
+    },
+  },
+  resolve: async ({ args, context }) => {
+    const authorData = AuthorUpdateSchema.parse(args);
+    const updated = await context.services.author.update(authorData, {
+      id: authorData.id,
+    });
+
+    return {
+      success: updated,
+      message: updated
+        ? "Author updated successfully"
+        : "Could not update author. Please check the provided id for the author",
+    };
   },
 });

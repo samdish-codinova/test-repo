@@ -8,6 +8,7 @@ import {
   AuthorQuery,
   AuthorQuerySchema,
   AuthorSchema,
+  AuthorUpdateSchema,
 } from "../model/Author";
 import { randomUUID } from "crypto";
 
@@ -72,6 +73,20 @@ export class AuthorService {
       .into("authors");
 
     return this.findById(uuid);
+  }
+
+  async update(
+    authorData: AuthorUpdateSchema,
+    updateFilter: AuthorUpdateSchema
+  ) {
+    const author = AuthorUpdateSchema.parse(authorData);
+    const filter = AuthorUpdateSchema.parse(updateFilter);
+
+    const updateResult = await knexInstance("authors")
+      .update(author)
+      .where(filter);
+
+    return Boolean(updateResult);
   }
 }
 
