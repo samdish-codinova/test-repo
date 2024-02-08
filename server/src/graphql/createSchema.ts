@@ -7,6 +7,7 @@ export function createSchema() {
 
   composer.Query.addFields({
     articleList: ArticleListType.getResolver("findByQuery"),
+    getAuthor: AuthorType.getResolver("findById"),
   });
 
   composer.Mutation.addFields({
