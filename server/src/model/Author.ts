@@ -13,4 +13,11 @@ export const AuthorQuerySchema = z.object({
     id: z.string().nullish()
 });
 
+export const AuthorInputSchema = z.object({
+  name: z.string(),
+  avatar: z.string().url(),
+});
+
+export type AuthorInputSchema = z.infer<typeof AuthorInputSchema>;
+
 export type AuthorQuery = z.input<typeof AuthorQuerySchema>;

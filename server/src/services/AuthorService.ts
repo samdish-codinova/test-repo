@@ -4,10 +4,12 @@ import { z } from "zod";
 import knexInstance from "../db/knex";
 import {
   Author,
+  AuthorInputSchema,
   AuthorQuery,
   AuthorQuerySchema,
   AuthorSchema,
 } from "../model/Author";
+import { randomUUID } from "crypto";
 
 export const AUTHORS = [];
 for (let i = 0; i < 100; i++) {
@@ -33,9 +35,10 @@ export class AuthorService {
     }); // simulate network latency
   }
 
-  async findById(id: string) {
-    const authors = await this.findByQuery({ id });
-    return authors[0];
+  async findById(id: string): Promise<Author | null> {
+    const author = await knexInstance("authors").select("*").where({ id });
+
+    return author?.[0] ?? null;
   }
 
   async findManyByIds(authorIds: readonly string[]): Promise<Author[]> {
@@ -58,6 +61,17 @@ export class AuthorService {
     }
 
     return shuffledAuthors;
+  }
+
+  async create(authorData: AuthorInputSchema) {
+    const uuid = randomUUID();
+
+    await knexInstance
+      .insert({ ...authorData, id: uuid })
+      .returning("id")
+      .into("authors");
+
+    return this.findById(uuid);
   }
 }
 
