@@ -1,5 +1,5 @@
-import "dotenv/config";
 import { knex } from "knex";
+import knexConfig from "./knexfile";
 
 declare module "knex/types/tables" {
   interface Author {
@@ -23,15 +23,7 @@ declare module "knex/types/tables" {
   }
 }
 
-const knexInstance = knex({
-  client: process.env.DB_CLIENT,
-  connection: {
-    host: process.env.DB_HOST,
-    port: Number(process.env.DB_PORT),
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-  },
-});
+const environment = process.env.NODE_ENV;
+const knexInstance = knex(knexConfig[environment]);
 
 export default knexInstance;

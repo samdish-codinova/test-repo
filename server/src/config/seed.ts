@@ -1,7 +1,9 @@
 import { faker } from "@faker-js/faker";
 import { randomUUID } from "crypto";
-import "dotenv/config";
-import knexInstance from "./db";
+import dotenv from "dotenv";
+import knexInstance from "../db/knex";
+
+dotenv.config({ path: "../../.env" });
 
 const seed = async () => {
   const AUTHORS = [];

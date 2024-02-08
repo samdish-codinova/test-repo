@@ -1,4 +1,4 @@
-import knexInstance from "../config/db";
+import knexInstance from "../db/knex";
 import { PaginationInput } from "../model/PaginationMeta";
 
 export class ArticleService {

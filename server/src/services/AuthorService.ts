@@ -1,7 +1,7 @@
 import { faker } from "@faker-js/faker";
 import { ulid } from "ulid";
 import { z } from "zod";
-import knexInstance from "../config/db";
+import knexInstance from "../db/knex";
 import {
   Author,
   AuthorQuery,

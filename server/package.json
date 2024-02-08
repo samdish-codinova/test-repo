@@ -2,7 +2,9 @@
   "name": "server",
   "version": "1.0.0",
   "scripts": {
-    "dev": "npx ts-node-dev src/server.ts"
+  "dev": "SET NODE_ENV=development&& npx ts-node-dev src/server.ts",
+  "seed": "SET NODE_ENV=development&& npx ts-node-dev src/config/seed.ts",
+  "migrate:latest": "knex migrate:latest --knexfile src/db/knexfile.ts --knexpath src/db/knex.ts"
   },
   "dependencies": {
     "@apollo/server": "^4.9.5",
