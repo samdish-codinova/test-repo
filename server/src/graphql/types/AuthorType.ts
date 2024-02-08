@@ -97,3 +97,23 @@ AuthorType.addResolver({
     };
   },
 });
+
+AuthorType.addResolver({
+  name: "deleteById",
+  type: AuthorType,
+  args: {
+    id: {
+      type: new GraphQLNonNull(GraphQLString),
+    },
+  },
+  resolve: async ({ args, context }) => {
+    const author = await context.services.author.findById(args.id);
+    if (!author) throw new Error("Author does not exist");
+
+    const isDeleted = await context.services.author.delete({ id: args.id });
+    if (!isDeleted)
+      throw new Error("Could not delete author. Please try again later");
+
+    return author;
+  },
+});

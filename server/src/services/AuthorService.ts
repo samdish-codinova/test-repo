@@ -9,7 +9,7 @@ import {
   AuthorInputSchema,
   AuthorQuerySchema,
   AuthorSchema,
-  AuthorUpdateSchema
+  AuthorUpdateSchema,
 } from "../model/Author";
 
 export const AUTHORS = [];
@@ -86,6 +86,12 @@ export class AuthorService {
       .where(filter);
 
     return Boolean(updateResult);
+  }
+
+  async delete(query: Partial<Author>) {
+    const isDeleted = await knexInstance("authors").where(query).del();
+
+    return Boolean(isDeleted);
   }
 
   async getTotalCount() {
