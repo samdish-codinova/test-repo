@@ -1,16 +1,16 @@
 import { faker } from "@faker-js/faker";
+import { randomUUID } from "crypto";
+import { PaginationInput } from "model/PaginationMeta";
 import { ulid } from "ulid";
 import { z } from "zod";
 import knexInstance from "../db/knex";
 import {
   Author,
   AuthorInputSchema,
-  AuthorQuery,
   AuthorQuerySchema,
   AuthorSchema,
-  AuthorUpdateSchema,
+  AuthorUpdateSchema
 } from "../model/Author";
-import { randomUUID } from "crypto";
 
 export const AUTHORS = [];
 for (let i = 0; i < 100; i++) {
@@ -25,15 +25,14 @@ for (let i = 0; i < 100; i++) {
 }
 
 export class AuthorService {
-  findByQuery(query: AuthorQuery) {
-    const finalQuery = AuthorQuerySchema.parse(query);
+  async findByQuery(query: PaginationInput) {
+    const authors = await knexInstance
+      .select("*")
+      .from("authors")
+      .limit(query.limit)
+      .offset(query.offset * query.limit);
 
-    const filter = computeFilterForQuery(finalQuery);
-    return new Promise<Author[]>((resolve) => {
-      setTimeout(() => {
-        resolve(AUTHORS.filter(filter));
-      }, 1000);
-    }); // simulate network latency
+    return authors;
   }
 
   async findById(id: string): Promise<Author | null> {
@@ -87,6 +86,11 @@ export class AuthorService {
       .where(filter);
 
     return Boolean(updateResult);
+  }
+
+  async getTotalCount() {
+    const count = await knexInstance("authors").count({ count: "*" });
+    return count?.[0]?.count ?? 0;
   }
 }
 
