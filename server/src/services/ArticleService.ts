@@ -2,6 +2,15 @@ import knexInstance from "../db/knex";
 import { PaginationInput } from "../model/PaginationMeta";
 
 export class ArticleService {
+  async findById(id: string) {
+    const article = await knexInstance
+      .select("*")
+      .from("articles")
+      .where("id", "=", id);
+
+    return article[0] ?? null;
+  }
+
   async findByQuery(query: PaginationInput) {
     const articlesList = await knexInstance
       .select("*")

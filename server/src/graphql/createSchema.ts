@@ -1,12 +1,14 @@
 import { SchemaComposer } from "graphql-compose";
 import { ArticleListType } from "./types/ArticleListType";
-import { AuthorType } from "./types/AuthorType";
+import { ArticleType } from "./types/ArticleType";
 import { AuthorListType } from "./types/AuthorListType";
+import { AuthorType } from "./types/AuthorType";
 
 export function createSchema() {
   const composer = new SchemaComposer();
 
   composer.Query.addFields({
+    getArticle: ArticleType.getResolver('findById'),
     articleList: ArticleListType.getResolver("findByQuery"),
     getAuthor: AuthorType.getResolver("findById"),
     authorList: AuthorListType.getResolver("authorList"),
