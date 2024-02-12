@@ -1,8 +1,5 @@
 import { GraphQLID, GraphQLNonNull, GraphQLString } from "graphql";
-import {
-  GraphQLDate,
-  ObjectTypeComposer
-} from "graphql-compose";
+import { GraphQLDate, ObjectTypeComposer } from "graphql-compose";
 import { Article, ArticleInputSchema } from "../../model/Article";
 import { GraphQLContext } from "../createContext";
 import { AuthorType } from "./AuthorType";
@@ -67,6 +64,26 @@ ArticleType.addResolver({
     const article = await context.services.article.create(articleData);
     if (!article)
       throw new Error("Could not create article. Please try again later!");
+
+    return article;
+  },
+});
+
+ArticleType.addResolver({
+  name: "deleteById",
+  type: ArticleType.NonNull,
+  args: {
+    id: {
+      type: new GraphQLNonNull(GraphQLString),
+    },
+  },
+  resolve: async ({ context, args }) => {
+    const article = await context.services.article.findById(args.id);
+    if (!article) throw new Error("Article not found");
+
+    const isDeleted = await context.services.article.delete({ id: article.id });
+    if (!isDeleted)
+      throw new Error("Could not delete article. Please try again later.");
 
     return article;
   },

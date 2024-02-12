@@ -1,6 +1,6 @@
 import { randomUUID } from "crypto";
 import knexInstance from "../db/knex";
-import { ArticleInput } from "../model/Article";
+import { Article, ArticleInput } from "../model/Article";
 import { PaginationInput } from "../model/PaginationMeta";
 
 export class ArticleService {
@@ -33,5 +33,11 @@ export class ArticleService {
     await knexInstance.insert({ ...article, id: articleId }).into("articles");
 
     return this.findById(articleId);
+  }
+
+  async delete(query: Partial<Article>) {
+    const isDelete = await knexInstance("articles").where(query).del();
+
+    return Boolean(isDelete);
   }
 }
