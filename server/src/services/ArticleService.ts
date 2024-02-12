@@ -1,4 +1,6 @@
+import { randomUUID } from "crypto";
 import knexInstance from "../db/knex";
+import { ArticleInput } from "../model/Article";
 import { PaginationInput } from "../model/PaginationMeta";
 
 export class ArticleService {
@@ -24,5 +26,12 @@ export class ArticleService {
   async findTotalCount() {
     const count = await knexInstance("articles").count({ count: "*" });
     return count?.[0]?.count ?? 0;
+  }
+
+  async create(article: Required<ArticleInput>) {
+    const articleId = randomUUID();
+    await knexInstance.insert({ ...article, id: articleId }).into("articles");
+
+    return this.findById(articleId);
   }
 }

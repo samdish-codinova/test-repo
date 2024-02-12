@@ -1,6 +1,9 @@
 import { GraphQLID, GraphQLNonNull, GraphQLString } from "graphql";
-import { GraphQLDate, ObjectTypeComposer } from "graphql-compose";
-import { Article } from "../../model/Article";
+import {
+  GraphQLDate,
+  ObjectTypeComposer
+} from "graphql-compose";
+import { Article, ArticleInputSchema } from "../../model/Article";
 import { GraphQLContext } from "../createContext";
 import { AuthorType } from "./AuthorType";
 
@@ -36,6 +39,34 @@ ArticleType.addResolver({
 
     const article = await context.services.article.findById(args.id);
     if (!article) throw new Error(`Article with id ${args.id} not found!`);
+
+    return article;
+  },
+});
+
+ArticleType.addResolver({
+  name: "createArticle",
+  type: ArticleType.NonNull,
+  args: {
+    title: {
+      type: new GraphQLNonNull(GraphQLString),
+    },
+    content: {
+      type: new GraphQLNonNull(GraphQLString),
+    },
+    authorId: {
+      type: new GraphQLNonNull(GraphQLString),
+    },
+  },
+  resolve: async ({ context, args }) => {
+    const articleData = ArticleInputSchema.parse(args);
+
+    const author = await context.services.author.findById(args.authorId);
+    if (!author) throw new Error("Invalid author id");
+
+    const article = await context.services.article.create(articleData);
+    if (!article)
+      throw new Error("Could not create article. Please try again later!");
 
     return article;
   },

@@ -8,13 +8,14 @@ export function createSchema() {
   const composer = new SchemaComposer();
 
   composer.Query.addFields({
-    getArticle: ArticleType.getResolver('findById'),
+    getArticle: ArticleType.getResolver("findById"),
     articleList: ArticleListType.getResolver("findByQuery"),
     getAuthor: AuthorType.getResolver("findById"),
     authorList: AuthorListType.getResolver("authorList"),
   });
 
   composer.Mutation.addFields({
+    createArticle: ArticleType.getResolver("createArticle"),
     createAuthor: AuthorType.getResolver("createAuthor"),
     updateAuthor: AuthorType.getResolver("updateById"),
     deleteAuthor: AuthorType.getResolver("deleteById"),
