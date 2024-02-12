@@ -1,6 +1,15 @@
-import { GraphQLID, GraphQLNonNull, GraphQLString } from "graphql";
+import {
+  GraphQLBoolean,
+  GraphQLID,
+  GraphQLNonNull,
+  GraphQLString,
+} from "graphql";
 import { GraphQLDate, ObjectTypeComposer } from "graphql-compose";
-import { Article, ArticleInputSchema } from "../../model/Article";
+import {
+  Article,
+  ArticleInputSchema,
+  ArticleUpdateSchema,
+} from "../../model/Article";
 import { GraphQLContext } from "../createContext";
 import { AuthorType } from "./AuthorType";
 
@@ -66,6 +75,43 @@ ArticleType.addResolver({
       throw new Error("Could not create article. Please try again later!");
 
     return article;
+  },
+});
+
+const ArticleUpdateResultType = ObjectTypeComposer.createTemp({
+  name: "ArticleUpdateResultType",
+  fields: {
+    success: new GraphQLNonNull(GraphQLBoolean),
+    message: GraphQLString,
+  },
+});
+
+ArticleType.addResolver({
+  name: "updateById",
+  type: ArticleUpdateResultType.NonNull,
+  args: {
+    id: {
+      type: new GraphQLNonNull(GraphQLString),
+    },
+    title: {
+      type: GraphQLString,
+    },
+    content: {
+      type: GraphQLString,
+    },
+  },
+  resolve: async ({ context, args }) => {
+    const article = ArticleUpdateSchema.parse(args);
+    const isUpdated = await context.services.article.update(article, {
+      id: article.id,
+    });
+
+    return {
+      success: isUpdated,
+      message: isUpdated
+        ? "Article updated successfully"
+        : "Could not update article. Please check the provided id for the article",
+    };
   },
 });
 

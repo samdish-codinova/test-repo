@@ -1,6 +1,11 @@
 import { randomUUID } from "crypto";
 import knexInstance from "../db/knex";
-import { Article, ArticleInput } from "../model/Article";
+import {
+  Article,
+  ArticleInput,
+  ArticleUpdate,
+  ArticleUpdateSchema,
+} from "../model/Article";
 import { PaginationInput } from "../model/PaginationMeta";
 
 export class ArticleService {
@@ -33,6 +38,17 @@ export class ArticleService {
     await knexInstance.insert({ ...article, id: articleId }).into("articles");
 
     return this.findById(articleId);
+  }
+
+  async update(articleData: ArticleUpdate, updateFilter: ArticleUpdate) {
+    const article = ArticleUpdateSchema.parse(articleData);
+    const filter = ArticleUpdateSchema.parse(updateFilter);
+
+    const updateResult = await knexInstance("articles")
+      .update(article)
+      .where(filter);
+
+    return Boolean(updateResult);
   }
 
   async delete(query: Partial<Article>) {

@@ -17,6 +17,7 @@ export function createSchema() {
 
   composer.Mutation.addFields({
     createArticle: ArticleType.getResolver("createArticle"),
+    updateArticle: ArticleType.getResolver('updateById'),
     deleteArticle: ArticleType.getResolver("deleteById"),
     createAuthor: AuthorType.getResolver("createAuthor"),
     updateAuthor: AuthorType.getResolver("updateById"),

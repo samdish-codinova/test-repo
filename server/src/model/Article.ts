@@ -17,3 +17,11 @@ export const ArticleInputSchema = z.object({
 });
 
 export type ArticleInput = z.infer<typeof ArticleInputSchema>;
+
+export const ArticleUpdateSchema = z.object({
+  id: z.string().uuid(),
+  title: z.string().optional(),
+  content: z.string().optional(),
+});
+
+export type ArticleUpdate = z.infer<typeof ArticleUpdateSchema>;
