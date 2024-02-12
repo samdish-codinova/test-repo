@@ -11,6 +11,7 @@ export function createSchema() {
     getArticle: ArticleType.getResolver("findById"),
     articleList: ArticleListType.getResolver("findByQuery"),
     getAuthor: AuthorType.getResolver("findById"),
+    getAllAuthors: AuthorType.getResolver('findAll'),
     authorList: AuthorListType.getResolver("authorList"),
   });
 

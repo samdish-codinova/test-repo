@@ -25,6 +25,10 @@ for (let i = 0; i < 100; i++) {
 }
 
 export class AuthorService {
+  async findAll() {
+    return knexInstance.select('*').from('authors');
+  }
+
   async findByQuery(query: PaginationInput) {
     const authors = await knexInstance
       .select("*")

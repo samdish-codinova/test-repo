@@ -61,6 +61,16 @@ AuthorType.addResolver({
   },
 });
 
+AuthorType.addResolver({
+  name: "findAll",
+  type: AuthorType.NonNull.List.NonNull,
+  resolve: async ({ context }) => {
+    const authors = await context.services.author.findAll();
+
+    return authors ?? [];
+  },
+});
+
 const AuthorUpdateResultType = ObjectTypeComposer.createTemp({
   name: "AuthorUpdateResultType",
   fields: {
